@@ -68,8 +68,9 @@ jobs:
 
       - name: Copy image to file
         run: |
-          skopeo copy containers-storage:${{ inputs.registry }}/${{ inputs.registry-username }}/${{ inputs.image-name }}:sha-${{ github.sha }}-${{ env.PODMAN_ARCH }} \
-            oci-archive:/tmp/${{ github.sha }}-${{ env.PODMAN_ARCH }}-oci.tar
+          podman save ${{ inputs.registry }}/${{ inputs.registry-username }}/${{ inputs.image-name }}:sha-${{ github.sha }}-${{ env.PODMAN_ARCH }} \
+            --format oci-archive \
+            -o /tmp/${{ github.sha }}-${{ env.PODMAN_ARCH }}-oci.tar
 
       - name: Upload digest
         uses: actions/upload-artifact@v4.4.0
