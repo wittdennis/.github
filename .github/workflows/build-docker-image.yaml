@@ -36,7 +36,7 @@ jobs:
           key: podman-storage-${{ matrix.platform }}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.2.0
+        uses: docker/setup-qemu-action@v3.3.0
 
       - name: export architecture name (removing os prefix)
         run: |
