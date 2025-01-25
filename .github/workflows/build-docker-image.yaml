@@ -19,6 +19,18 @@ on:
         type: boolean
         default: true
         description: Wheter or not github artifacts for images should be created
+      build-args:
+        type: string
+        default: ""
+        description: Build args to pass in form of yaml content each arg seperated by a new line
+      amd64-build-args:
+        type: string
+        default: ""
+        description: Build args that are only passed to the amd64 platform build
+      arm64-build-args:
+        type: string
+        default: ""
+        description: Build args that are only passed to the arm64 platform build
 
 jobs:
   build:
@@ -26,6 +38,11 @@ jobs:
     strategy:
       matrix:
         platform: [linux/amd64, linux/arm64]
+        include:
+          - platform: linux/amd64
+            build-args: ${{ inputs.amd64-build-args }}
+          - platform: linux/arm64
+            build-args: ${{ inputs.arm64-build-args }}
     steps:
       - uses: actions/checkout@v4
 
@@ -61,6 +78,9 @@ jobs:
           image: ${{ inputs.image-name }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ matrix.build-args }}
+            ${{ inputs.build-args }}
           oci: true
           containerfiles: |
             ./Dockerfile
